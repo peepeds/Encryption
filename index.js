@@ -20,8 +20,7 @@ app.post('/aes/decrypt', async (req, res) => {
     const encrypted = req.body.encrypted;
     const iv = req.body.iv;
     const secret = req.body.secret;
-    
-    console.log(encrypted, iv, secret);
+
     const result = await config.aes.decrypt(encrypted, iv, secret);
     res.send(result);
 })

@@ -24,14 +24,3 @@ module.exports = {
     decrypt
 };
 
-// Example usage
-// let message = "Hello World";
-// let shift = 5;
-// encrypt(message, shift).then((result) => {
-//     console.log("Encrypted:", result);
-//     return decrypt(result, shift);
-// }).then((decrypted) => {
-//     console.log("Decrypted:", decrypted);
-// }).catch((err) => {
-//     console.error(err);
-// });

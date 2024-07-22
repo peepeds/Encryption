@@ -27,9 +27,6 @@ const encrypt = async (message) => {
     const privateKey = key.privateKey;
     const buffer = Buffer.from(message);
     const encrypted = crypto.publicEncrypt(publicKey, buffer);
-    console.log(encrypted.toString('base64'));
-    console.log(privateKey);
-    console.log(publicKey);
     return {
         "message": encrypted.toString('base64'),
         "publicKey": publicKey,
