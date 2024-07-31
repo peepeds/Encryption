@@ -24,32 +24,37 @@ const generateKey = async () => {
 const encrypt = async (message) => {
     const key = await generateKey();
     const publicKey = key.publicKey;
-    const privateKey = key.privateKey;
     const buffer = Buffer.from(message);
     const encrypted = crypto.publicEncrypt(publicKey, buffer);
     return {
         "message": encrypted.toString('base64'),
         "publicKey": publicKey,
-        "privateKey": privateKey
+        "privateKey": key.privateKey
     };
 }
 
-const decrypt = async (message, privateKey) => {
-    const buffer = Buffer.from(message, 'base64');
-    const decrypted = crypto.privateDecrypt(
-        {
-            key: privateKey,
-            passphrase: 'top secret',
-        },
-        buffer
-    );
-    return {
-        "message": decrypted.toString()
-    };
+const decrypt = async (encrypt, privateKey) => {
+    try {
+        const buffer = await Buffer.from(encrypt, 'base64');
+        const decrypted = await crypto.privateDecrypt(
+            {
+                key: privateKey,
+                passphrase: 'top secret',
+            },
+            buffer
+        );
+        return {
+            "message": decrypted.toString()
+        };
+    } catch (error)
+    {
+        return {
+            "message": "ERRRRORRRR BANH" 
+        };
+    }
 }
-
 
 module.exports = {
-	encrypt ,
-	decrypt
+    encrypt,
+    decrypt
 }

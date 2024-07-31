@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES</title>
+</head>
+<body>
+    <h3>Enkripsi</h3>
+    <form id="encryptionForm">
+        <input type="text" name="message" id="encryptionMessage" placeholder="plain text">
+        <br>
+        <button type="submit">Enkripsi</button>
+    </form>
+    <div id="resultEncryptionContainer">
+        <h3 id="encryptionHeader"></h3>
+        <p id="encryptionEncryptData"></p>
+        <p id="encryptionPrivate"></p>
+    </div>
+
+    <h3>Dekripsi</h3>
+    <form id="decryptionForm">
+        <input type="text" name="message" id="decryptionMessage" placeholder="decrypt message">
+        <br>
+        <input type="text" name="private" id="decryptionPrivate" placeholder="private key">
+        <br>
+        <button type="submit">Dekripsi</button>
+    </form>
+    <div id="resultDecryptionContainer">
+        <h3 id="decryptionHeader"></h3>
+        <p id="decryptionResult"></p>
+    </div>
+
+    <script>
+        document.getElementById('encryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const message = document.getElementById('encryptionMessage').value;
+    
+            const response = await fetch('/rsa/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+    
+            const data = await response.json();
+            document.getElementById('encryptionEncryptData').innerText = "Data Enkripsi: " + data.message;
+
+            // Escape newlines in private key
+            const escapedPrivateKey = data.privateKey.replace(/\n/g, '\\n');
+
+            document.getElementById('encryptionPrivate').innerText = "Private Key: " + escapedPrivateKey;
+            document.getElementById('encryptionHeader').innerText = "Hasil Enkripsi:";
+        });
+    
+        document.getElementById('decryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const encrypt = document.getElementById('decryptionMessage').value;
+            let privateKey = document.getElementById('decryptionPrivate').value;
+           
+            console.log(encrypt);
+            console.log(privateKey);
+
+            // Escape newlines in private key for sending
+            privateKey = privateKey.replace(/\\n/g, '\n');
+    
+            const response = await fetch('/rsa/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ encrypt, privateKey })
+            });
+    
+            const data = await response.json();
+            document.getElementById('decryptionResult').innerText = "Message: " + data.message;
+            document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
+        });
+    </script>
+    
+</body>
+</html>

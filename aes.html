@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES</title>
+</head>
+<body>
+    <h3>Enkripsi</h3>
+    <form id="encryptionForm">
+        <input type="text" name="message" id="encryptionMessage" placeholder="plain text">
+        <br>
+        <button type="submit">Enkripsi</button>
+    </form>
+    <div id="resultEncryptionContainer">
+        <h3 id="encryptionHeader"></h3>
+        <p id="encryptionEncryptData"></p>
+        <p id="encryptionIv"></p>
+        <p id="encryptionSecret"></p>
+    </div>
+
+    <h3>Dekripsi</h3>
+    <form id="decryptionForm">
+        <input type="text" name="message" id="decryptionMessage" placeholder="decrypt message">
+        <br>
+        <input type="text" name="iv" id="decryptionIv" placeholder="iv key">
+        <br>
+        <input type="text" name="key" id="decryptionSecret" placeholder="secret key">
+        <br>
+        <button type="submit">Dekripsi</button>
+    </form>
+    <div id="resultDecryptionContainer">
+        <h3 id="decryptionHeader"></h3>
+        <p id="decryptionResult"></p>
+    </div>
+
+    <script>
+        document.getElementById('encryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const message = document.getElementById('encryptionMessage').value;
+
+            const response = await fetch('/aes/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message})
+            });
+
+            const data = await response.json();
+            let encryptedData = await data.encryptedData;
+            let iv = await data.iv;
+            let secret = await data.secret;
+            document.getElementById('encryptionEncryptData').innerText = "Data Enkripsi: " + encryptedData;
+            document.getElementById('encryptionIv').innerText = "IV: " + iv;
+            document.getElementById('encryptionSecret').innerText = "secret: " + secret;
+            document.getElementById('encryptionHeader').innerText = "Hasil Enkripsi:";
+        });
+
+        document.getElementById('decryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const encrypted =  document.getElementById('decryptionMessage').value;
+            const iv =  document.getElementById('decryptionIv').value;
+            const secret =  document.getElementById('decryptionSecret').value;
+            
+
+            const response = await fetch('/aes/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ encrypted, iv , secret})
+            });
+
+            const data = await response.json();
+            let message = await data.message;
+            document.getElementById('decryptionResult').innerText = "Message: " + message;
+            document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
+        });
+    </script>
+</body>
+</html>

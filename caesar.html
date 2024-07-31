@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Chipper</title>
+</head>
+<body>
+    <h3>Enkripsi</h3>
+    <form id="encryptionForm">
+        <input type="text" name="message" id="encryptionMessage" placeholder="pesan">
+        <br>
+        <input type="number" name="shift" id="encryptionShift" placeholder="jumlah pergeseran">
+        <br>
+        <button type="submit">Enkripsi</button>
+    </form>
+    <div id="resultEncryptionContainer">
+        <h3 id="encryptionHeader"></h3>
+        <p id="encryptionResult"></p>
+    </div>
+
+    <h3>Dekripsi</h3>
+    <form id="decryptionForm">
+        <input type="text" name="message" id="decryptionMessage" placeholder="pesan">
+        <br>
+        <input type="number" name="shift" id="decryptionShift" placeholder="jumlah pergeseran">
+        <br>
+        <button type="submit">Dekripsi</button>
+    </form>
+    <div id="resultDecryptionContainer">
+        <h3 id="decryptionHeader"></h3>
+        <p id="decryptionResult"></p>
+    </div>
+
+    <script>
+        document.getElementById('encryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const message = document.getElementById('encryptionMessage').value;
+            const shift = document.getElementById('encryptionShift').value;
+
+            const response = await fetch('/caesar/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message, shift })
+            });
+
+            const data = await response.json();
+            document.getElementById('encryptionResult').innerText = data.result;
+            document.getElementById('encryptionHeader').innerText = "Hasil Enkripsi:";
+        });
+
+        document.getElementById('decryptionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir secara default
+            const message = document.getElementById('decryptionMessage').value;
+            const shift = document.getElementById('decryptionShift').value;
+
+            const response = await fetch('/caesar/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message, shift })
+            });
+
+            const data = await response.json();
+            document.getElementById('decryptionResult').innerText = data.result;
+            document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
+        });
+    </script>
+</body>
+</html>

@@ -2,15 +2,15 @@ const crypto = require('crypto');
 
 const encrypt = async (message) => {
     const algorithm = 'aes-256-cbc';
-    const key = crypto.randomBytes(32);
+    const secret = crypto.randomBytes(32);
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encrypted = cipher.update(message);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const cipher = crypto.createCipheriv(algorithm, secret, iv);
+    let encrypted = cipher.update(message, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
     return { 
+        encryptedData: encrypted,
         iv: iv.toString('hex'), 
-        encryptedData: encrypted.toString('hex'),
-        key: key.toString('hex')
+        secret: secret.toString('hex')
     };
 }
 
@@ -19,11 +19,11 @@ const decrypt = async (encrypted, iv, key) => {
     const keyBuffer = Buffer.from(key, 'hex'); 
     const encryptedText = Buffer.from(encrypted, 'hex');
     const decipher = crypto.createDecipheriv('aes-256-cbc', keyBuffer, ivBuffer);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
     return {
-        message: decrypted.toString()
-    }
+        message: decrypted
+    };
 }
 
 module.exports = {
