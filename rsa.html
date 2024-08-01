@@ -74,7 +74,13 @@
             });
     
             const data = await response.json();
-            document.getElementById('decryptionResult').innerText = "Message: " + data.message;
+            let message = data.message
+            if (message == '-1') {
+                alert("error decrypt");
+                message = "1100101100011001010111011011000";
+
+            }
+            document.getElementById('decryptionResult').innerText = "Message: " + message;
             document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
         });
     </script>

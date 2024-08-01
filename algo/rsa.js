@@ -49,7 +49,7 @@ const decrypt = async (encrypt, privateKey) => {
     } catch (error)
     {
         return {
-            "message": "ERRRRORRRR BANH" 
+            "message": "-1" 
         };
     }
 }

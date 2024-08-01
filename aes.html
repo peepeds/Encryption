@@ -74,6 +74,11 @@
 
             const data = await response.json();
             let message = await data.message;
+            if(message == '-1'){
+                alert('error decrypt');
+                message = "1100101100011001010111011011000";
+
+            }
             document.getElementById('decryptionResult').innerText = "Message: " + message;
             document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
         });

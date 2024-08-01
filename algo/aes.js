@@ -18,9 +18,15 @@ const decrypt = async (encrypted, iv, key) => {
     const ivBuffer = Buffer.from(iv, 'hex');
     const keyBuffer = Buffer.from(key, 'hex'); 
     const encryptedText = Buffer.from(encrypted, 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', keyBuffer, ivBuffer);
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
+    let decrypted; 
+
+    try{
+        const decipher = crypto.createDecipheriv('aes-256-cbc', keyBuffer, ivBuffer);
+        decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+    } catch {
+        decrypted = "-1";
+    }
     return {
         message: decrypted
     };
