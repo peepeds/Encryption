@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/header.css">
     <title>AES</title>
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/aes" id="AES">AES</a></li>
+                <li><a href="/rsa" id="RSA">RSA</a></li>
+                <li><a href="/caesar" id="Caesar">Caesar</a></li>
+            </ul>
+        </nav>
+    </header>
     <h3>Enkripsi</h3>
     <form id="encryptionForm">
         <input type="text" name="message" id="encryptionMessage" placeholder="plain text">
@@ -15,14 +25,17 @@
     <div id="resultEncryptionContainer">
         <h3 id="encryptionHeader"></h3>
         <p id="encryptionEncryptData"></p>
-        <p id="encryptionPrivate"></p>
+        <p id="encryptionIv"></p>
+        <p id="encryptionSecret"></p>
     </div>
 
     <h3>Dekripsi</h3>
     <form id="decryptionForm">
         <input type="text" name="message" id="decryptionMessage" placeholder="decrypt message">
         <br>
-        <input type="text" name="private" id="decryptionPrivate" placeholder="private key">
+        <input type="text" name="iv" id="decryptionIv" placeholder="iv key">
+        <br>
+        <input type="text" name="key" id="decryptionSecret" placeholder="secret key">
         <br>
         <button type="submit">Dekripsi</button>
     </form>
@@ -35,48 +48,44 @@
         document.getElementById('encryptionForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Mencegah pengiriman formulir secara default
             const message = document.getElementById('encryptionMessage').value;
-    
-            const response = await fetch('/rsa/encrypt', {
+
+            const response = await fetch('/aes/encrypt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({ message})
             });
-    
+
             const data = await response.json();
-            document.getElementById('encryptionEncryptData').innerText = "Data Enkripsi: " + data.message;
-
-            // Escape newlines in private key
-            const escapedPrivateKey = data.privateKey.replace(/\n/g, '\\n');
-
-            document.getElementById('encryptionPrivate').innerText = "Private Key: " + escapedPrivateKey;
+            let encryptedData = await data.encryptedData;
+            let iv = await data.iv;
+            let secret = await data.secret;
+            document.getElementById('encryptionEncryptData').innerText = "Data Enkripsi: " + encryptedData;
+            document.getElementById('encryptionIv').innerText = "IV: " + iv;
+            document.getElementById('encryptionSecret').innerText = "secret: " + secret;
             document.getElementById('encryptionHeader').innerText = "Hasil Enkripsi:";
         });
-    
+
         document.getElementById('decryptionForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Mencegah pengiriman formulir secara default
-            const encrypt = document.getElementById('decryptionMessage').value;
-            let privateKey = document.getElementById('decryptionPrivate').value;
-           
-            console.log(encrypt);
-            console.log(privateKey);
+            const encrypted =  document.getElementById('decryptionMessage').value;
+            const iv =  document.getElementById('decryptionIv').value;
+            const secret =  document.getElementById('decryptionSecret').value;
+            
 
-            // Escape newlines in private key for sending
-            privateKey = privateKey.replace(/\\n/g, '\n');
-    
-            const response = await fetch('/rsa/decrypt', {
+            const response = await fetch('/aes/decrypt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ encrypt, privateKey })
+                body: JSON.stringify({ encrypted, iv , secret})
             });
-    
+
             const data = await response.json();
-            let message = data.message
-            if (message == '-1') {
-                alert("error decrypt");
+            let message = await data.message;
+            if(message == '-1'){
+                alert('error decrypt');
                 message = "1100101100011001010111011011000";
 
             }
@@ -84,6 +93,5 @@
             document.getElementById('decryptionHeader').innerText = "Hasil Dekripsi:";
         });
     </script>
-    
 </body>
 </html>

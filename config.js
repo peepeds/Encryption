@@ -1,6 +1,6 @@
-const caesar = require('./algo/caesar');
-const rsa = require('./algo/rsa')
-const aes = require('./algo/aes')
+const caesar = require('./models/algo/caesar');
+const rsa = require('./models/algo/rsa')
+const aes = require('./models/algo/aes')
 module.exports = {
     caesar,
     rsa,

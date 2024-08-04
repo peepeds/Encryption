@@ -1,14 +1,21 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const path = require('path');
 const config = require('./config');
-require('dotenv').config();
-const port = process.env.PORT ;
 
-app.use(express.static('public'));
+require('dotenv').config();
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev';
+require('dotenv').config({ path: path.resolve(__dirname, envFile) });
+
+const port = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'views')));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 
 app.post('/aes/encrypt', async (req, res) => {
@@ -38,8 +45,7 @@ app.post('/rsa/decrypt', async(req,res)=>{
     res.send(result);
 })
 
-app.post('/caesar/encrypt', async (req, res) => {
-    console.log(req.body);
+app.post('/caesar/encrypt', async (req, res) => {;
     const message = req.body.message;
     const shift = parseInt(req.body.shift);
     const result = await config.caesar.encrypt(message, shift);
@@ -53,17 +59,19 @@ app.post('/caesar/decrypt', async (req, res) => {
     const result = await config.caesar.decrypt(message, shift);
     res.send(result);
 })
-
+app.get('/', async (req, res) => {
+    res.sendFile(__dirname + '/views/main.html');
+})
 app.get('/caesar', async (req, res) => {
-    res.sendFile(__dirname + '/caesar.html');
+    res.sendFile(__dirname + '/views/caesar.html');
 });
 
 app.get('/aes', async (req, res) => {
-    res.sendFile(__dirname + '/aes.html');
+    res.sendFile(__dirname + '/views/aes.html');
 });
 
 app.get('/rsa', async (req, res) => {
-    res.sendFile(__dirname + '/rsa.html');
+    res.sendFile(__dirname + '/views/rsa.html');
 });
 app.use((req,res) =>{
     res.status(404).send("Page not found");
