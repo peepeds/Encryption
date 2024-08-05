@@ -17,48 +17,56 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+app.post('/caesar/encrypt', config.caesarController.encrypt);
+app.post('/caesar/decrypt', config.caesarController.decrypt);
 
-app.post('/aes/encrypt', async (req, res) => {
-    const message = req.body.message;
-    const result = await config.aes.encrypt(message);
-    res.send(result);
-})
+app.post('/rsa/encrypt', config.rsaController.encrypt);
+app.post('/rsa/decrypt', config.rsaController.decrypt);
 
-app.post('/aes/decrypt', async (req, res) => {
-    const encrypted = req.body.encrypted;
-    const iv = req.body.iv;
-    const secret = req.body.secret;
-    const result = await config.aes.decrypt(encrypted, iv, secret);
-    res.send(result);
-})
+app.post('/aes/encrypt', config.aesController.encrypt);
+app.post('/aes/decrypt', config.aesController.decrypt);
 
-app.post('/rsa/encrypt', async(req,res)=>{
-    const message = req.body.message;
-    const result = await config.rsa.encrypt(message);
-    res.send(result)
-})
+// app.post('/aes/encrypt', async (req, res) => {
+//     const message = req.body.message;
+//     const result = await config.aes.encrypt(message);
+//     res.send(result);
+// })
 
-app.post('/rsa/decrypt', async(req,res)=>{
-    const encrypt = req.body.encrypt ; 
-    const privateKey = req.body.privateKey;
-    const result = await config.rsa.decrypt(encrypt,privateKey);
-    res.send(result);
-})
+// app.post('/aes/decrypt', async (req, res) => {
+//     const encrypted = req.body.encrypted;
+//     const iv = req.body.iv;
+//     const secret = req.body.secret;
+//     const result = await config.aes.decrypt(encrypted, iv, secret);
+//     res.send(result);
+// })
 
-app.post('/caesar/encrypt', async (req, res) => {;
-    const message = req.body.message;
-    const shift = parseInt(req.body.shift);
-    const result = await config.caesar.encrypt(message, shift);
+// app.post('/rsa/encrypt', async(req,res)=>{
+//     const message = req.body.message;
+//     const result = await config.rsa.encrypt(message);
+//     res.send(result)
+// })
+
+// app.post('/rsa/decrypt', async(req,res)=>{
+//     const encrypt = req.body.encrypt ; 
+//     const privateKey = req.body.privateKey;
+//     const result = await config.rsa.decrypt(encrypt,privateKey);
+//     res.send(result);
+// })
+
+// app.post('/caesar/encrypt', async (req, res) => {;
+//     const message = req.body.message;
+//     const shift = parseInt(req.body.shift);
+//     const result = await config.caesar.encrypt(message, shift);
    
-    res.json(result);
-});
+//     res.json(result);
+// });
 
-app.post('/caesar/decrypt', async (req, res) => {
-    const message = req.body.message;
-    const shift = req.body.shift;
-    const result = await config.caesar.decrypt(message, shift);
-    res.send(result);
-})
+// app.post('/caesar/decrypt', async (req, res) => {
+//     const message = req.body.message;
+//     const shift = req.body.shift;
+//     const result = await config.caesar.decrypt(message, shift);
+//     res.send(result);
+// })
 app.get('/', async (req, res) => {
     res.sendFile(__dirname + '/views/main.html');
 })

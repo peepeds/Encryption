@@ -1,0 +1,17 @@
+.custom-icon {
+  color: red;
+}
+
+footer p{
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 0;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%; 
+  background-color: black;
+  text-align: center;
+}
